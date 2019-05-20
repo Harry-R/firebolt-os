@@ -1,0 +1,3 @@
+# firebolt-os
+
+Just for learning about operating systems in rust...
