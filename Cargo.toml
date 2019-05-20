@@ -5,9 +5,4 @@ authors = ["Leonard Rapp <leonardrapp@gmx.de>"]
 edition = "2018"
 
 [dependencies]
-
-[profile.dev]
-panic = "abort"
-
-[profile.release]
-panic = "abort"
+bootloader = "0.6.0"
