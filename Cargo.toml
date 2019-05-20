@@ -1,0 +1,7 @@
+[package]
+name = "firebolt-os"
+version = "0.1.0"
+authors = ["Leonard Rapp <leonardrapp@gmx.de>"]
+edition = "2018"
+
+[dependencies]
