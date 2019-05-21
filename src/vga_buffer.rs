@@ -1,5 +1,6 @@
 use volatile::Volatile;
 use core::fmt;
+use lazy_static::lazy_static;
 
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
@@ -86,10 +87,6 @@ impl Writer {
         }
     }
 
-    /// write a newline to VGA buffer
-    fn new_line(&mut self) {
-        // TODO
-    }
 
     /// write a string to VGA buffer, replace non-printable bytes
     pub fn write_string(&mut self, s: &str) {
@@ -100,6 +97,31 @@ impl Writer {
                 // else
                 _ => self.write_byte(0xfe),
             }
+        }
+    }
+
+    /// write a newline to VGA buffer, move above content one line up
+    fn new_line(&mut self) {
+        for row in 1..BUFFER_HEIGHT {
+            for col in 0..BUFFER_WIDTH {
+                let character = self.buffer.chars[row][col].read();
+                self.buffer.chars[row - 1][col].write(character);
+            }
+        }
+        self.clear_row(BUFFER_HEIGHT - 1);
+        self.column_position = 0;
+    }
+
+    /// clear a row
+    fn clear_row(&mut self, row: usize) {
+        // blank character
+        let blank = ScreenChar {
+            ascii_character: b' ',
+            color_code: self.color_code,
+        };
+        // iterate over a row, overwrite with blank char
+        for col in 0..BUFFER_WIDTH {
+            self.buffer.chars[row][col].write(blank);
         }
     }
 }
@@ -123,5 +145,6 @@ pub fn print_something() {
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     };
 
-    write!(writer, "Hello world! {}", 42);
+    write!(writer, "Hello world! {} \n", 42).unwrap();
+    write!(writer, "Hello world! {}", 23).unwrap();
 }
