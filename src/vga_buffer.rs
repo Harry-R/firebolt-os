@@ -1,6 +1,7 @@
 use volatile::Volatile;
 use core::fmt;
 use lazy_static::lazy_static;
+use spin::Mutex;
 
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
@@ -136,15 +137,11 @@ impl fmt::Write for Writer {
 }
 
 
-/// test function for VGA buffer writer
-pub fn print_something() {
-    use core::fmt::Write;
-    let mut writer = Writer {
+lazy_static! {
+    /// static interface to be accessed from other modules
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Green, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    };
-
-    write!(writer, "Hello world! {} \n", 42).unwrap();
-    write!(writer, "Hello world! {}", 23).unwrap();
+    });
 }
