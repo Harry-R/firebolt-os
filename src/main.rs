@@ -10,9 +10,20 @@ mod vga_buffer;
 mod serial;
 
 #[panic_handler]
+#[cfg(not(test))]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
     
+    loop {}
+}
+
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    serial_println!("[failed]\n");
+    serial_println!("Error: {}\n", info);
+    exit_qemu(QemuExitCode::Failed);
     loop {}
 }
 
@@ -39,14 +50,6 @@ fn test_runner(tests: &[&dyn Fn()]) {
     }
 }
 
-
-#[test_case]
-/// trivial function just for testing tests
-fn trivial_assertion() {
-    serial_println!("trivial assertion... ");
-    assert_eq!(1, 0);
-    serial_println!("[ok]");
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
