@@ -27,17 +27,39 @@ pub extern "C" fn _start() -> ! {
 }
 
 #[cfg(test)]
+/// runs the tests and exits qemu after finishing
 fn test_runner(tests: &[&dyn Fn()]) {
     println!("Running {} tests", tests.len());
     for test in tests {
         test();
+
+        exit_qemu(QemuExitCode::Success);
     }
 }
 
 
 #[test_case]
+/// trivial function just for testing tests
 fn trivial_assertion() {
     print!("trivial assertion... ");
     assert_eq!(1, 1);
     println!("[ok]");
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u32)]
+/// enum for qemu exit codes, 0x10 is mapped to success in bootimage configuration, see Cargo.toml
+pub enum QemuExitCode {
+    Success = 0x10,
+    Failed = 0x11,
+}
+
+/// Exits qemu by writing to isa-debug-exit port
+pub fn exit_qemu(exit_code: QemuExitCode) {
+    use x86_64::instructions::port::Port;
+
+    unsafe {
+        let mut port = Port::new(0xf4);
+        port.write(exit_code as u32);
+    }
 }
