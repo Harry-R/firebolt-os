@@ -7,6 +7,7 @@
 use core::panic::PanicInfo;
 
 mod vga_buffer;
+mod serial;
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
@@ -31,6 +32,7 @@ pub extern "C" fn _start() -> ! {
 fn test_runner(tests: &[&dyn Fn()]) {
     println!("Running {} tests", tests.len());
     for test in tests {
+        serial_println!("Running {} tests", tests.len());
         test();
 
         exit_qemu(QemuExitCode::Success);
@@ -41,9 +43,9 @@ fn test_runner(tests: &[&dyn Fn()]) {
 #[test_case]
 /// trivial function just for testing tests
 fn trivial_assertion() {
-    print!("trivial assertion... ");
-    assert_eq!(1, 1);
-    println!("[ok]");
+    serial_println!("trivial assertion... ");
+    assert_eq!(1, 0);
+    serial_println!("[ok]");
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
