@@ -45,9 +45,8 @@ fn test_runner(tests: &[&dyn Fn()]) {
     for test in tests {
         serial_println!("Running {} tests", tests.len());
         test();
-
-        exit_qemu(QemuExitCode::Success);
     }
+    exit_qemu(QemuExitCode::Success);
 }
 
 
