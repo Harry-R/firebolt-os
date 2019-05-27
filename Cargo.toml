@@ -1,5 +1,5 @@
 [package]
-name = "firebolt-os"
+name = "firebolt_os"
 version = "0.1.0"
 authors = ["Leonard Rapp <leonardrapp@gmx.de>"]
 edition = "2018"

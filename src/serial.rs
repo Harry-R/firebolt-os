@@ -3,7 +3,6 @@ use spin::Mutex;
 use lazy_static::lazy_static;
 
 
-
 lazy_static! {
     /// serial port interface to host system
     pub static ref SERIAL1: Mutex<SerialPort> = {

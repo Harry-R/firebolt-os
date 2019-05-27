@@ -42,7 +42,7 @@ version = "1.0.37"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "firebolt-os"
+name = "firebolt_os"
 version = "0.1.0"
 dependencies = [
  "bootloader 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
